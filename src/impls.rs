@@ -563,6 +563,13 @@ mod bstr {
         }
     }
 
+    impl AsRef<BStr> for BStr {
+        #[inline]
+        fn as_ref(&self) -> &BStr {
+            self
+        }
+    }
+
     impl AsRef<BStr> for [u8] {
         #[inline]
         fn as_ref(&self) -> &BStr {
@@ -664,6 +671,14 @@ mod bstr {
         #[inline]
         fn try_from(s: &'a BStr) -> Result<String, crate::Utf8Error> {
             Ok(s.as_bytes().to_str()?.into())
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    impl Clone for Box<BStr> {
+        #[inline]
+        fn clone(&self) -> Self {
+            BStr::from_boxed_bytes(self.as_bytes().into())
         }
     }
 
